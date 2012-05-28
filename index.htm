@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Demo: Layout with Dijit</title>
+        
+        <style type="text/css">
+        
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    font: 12px Arial;
+}
+
+#appLayout {
+    height: 100%;
+}
+#leftCol {
+    width: 14em;
+}
+
+.claro .demoLayout .edgePanel {
+    background-color: #d0e9fc;
+}
+
+#viewsChart {
+    width: 550px;
+    height: 550px;
+}
+
+    #grid {
+    width: 100%;
+    height: 200px;
+}
+
+
+        </style>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/claro/claro.css" media="screen">
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dojox/grid/resources/claroGrid.css" media="screen">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dojo/dojo.js" data-dojo-config="async: true, parseOnLoad: true">
+        </script>
+        <script>
+            require([      
+                 "dojo/query",
+                 "dojox/grid/DataGrid",
+                 "dojo/store/Memory",
+                 "dojo/data/ObjectStore",
+                 "dojo/NodeList-manipulate",
+                 "dijit/layout/BorderContainer", 
+                 "dijit/layout/TabContainer", 
+                 "dijit/layout/ContentPane", 
+                 "dojo/parser",
+                 "dojo/domReady!"
+              ], function (query, DataGrid, Memory, ObjectStore) {
+                data = [
+                      { title:'iPhone 4s', customer:'Apple inc.', date_of_create:'2012-05-27 14:00', date_of_sent : '2012-05-28 11:05', number_of_emails : '98.786', completed : '78%' },
+                      { title:'Korting op uw Libelle abonnement', customer:'Sanoma B.V.', date_of_create:'2012-05-24 15:22', date_of_sent : '2012-05-26 16:47', number_of_emails : '20.326', completed : '14%' }
+                  ];
+                  var objectStore = new Memory({
+                      data: data
+                  });
+                  grid = new DataGrid({
+                      store: ObjectStore({objectStore: objectStore}),
+                      structure: [
+                          {name:"Title", field:"title", width: "250px"},
+                          {name:"Customer", field:"customer", width: "120px"},
+                          {name:"Date of create", field:"date_of_create",width:"100%"},
+                          {name:"Date of sent", field:"date_of_sent",width:"100%"},
+                          {name:"Number of emails", field:"number_of_emails",width:"140px"},
+                          {name:"Completed", field:"completed",width:"100px"}
+                      ]
+                  }, "grid");
+                  grid.startup();
+                  
+                  grid.on('RowClick', function (event) {
+                    var idx, item, store;
+                    
+                    idx = event.rowIndex;
+                    item = this.getItem(idx); 
+                    store = this.store;
+                    
+                    query("#campaign-details h2").innerHTML(store.getValue(item, 'title'));
+                    query("#campaign-details p").innerHTML(store.getValue(item, 'customer'));
+                  }, true);
+
+            });
+        </script>
+    </head>
+    <body class="claro">
+        <div id="appLayout" class="demoLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
+            <div class="centerPanel" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center', tabPosition: 'bottom'">
+                <div data-dojo-type="dijit.layout.ContentPane" title="Group 1">
+                    <h4>E-mail campaigns</h4>
+                    <p>Select a campaign to view the details.</p>
+                    <div id="grid"></div>
+                    <div id="campaign-details">
+                        <h2></h2>
+                        <p></p>
+                    </div>
+                </div>
+                <div data-dojo-type="dijit.layout.ContentPane" title="Group Two">
+                    <h4>Group 2 Content</h4>
+                </div>
+                <div data-dojo-type="dijit.layout.ContentPane" title="Long Tab Label for this One">
+                    <h4>Group 3 Content</h4>
+                </div>
+            </div>
+            <div class="edgePanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">Header content (top)</div>
+            <div id="leftCol" class="edgePanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'left', splitter: true">Sidebar content (left)</div>
+        </div>
+    </body>
+</html>
